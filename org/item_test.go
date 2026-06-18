@@ -138,11 +138,11 @@ func TestItemAttributesNormalization(t *testing.T) {
 		Attributes: []*org.Attribute{
 			nil,
 			{},
-			{Name: " Colour ", Value: " Black "},
+			{Label: " Colour ", Value: " Black "},
 		},
 	}
 	norm.Normalize(i)
 	require.Len(t, i.Attributes, 1)
-	assert.Equal(t, "Colour", i.Attributes[0].Name)
+	assert.Equal(t, "Colour", i.Attributes[0].Label)
 	assert.Equal(t, "Black", i.Attributes[0].Value)
 }

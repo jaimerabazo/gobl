@@ -38,11 +38,11 @@
       "object": "org.Attribute",
       "subsets": [
         {
-          "field": "name",
+          "field": "key",
           "assert": [
             {
               "id": "GOBL-ORG-ATTRIBUTE-01",
-              "desc": "attribute name is required",
+              "desc": "attribute key is required",
               "tests": "present"
             }
           ]
