@@ -412,43 +412,6 @@ func TestOrgIdentityScopeNormalize(t *testing.T) {
 			assert.Equal(t, "0160", id.Ext.Get(iso.ExtKeySchemeID).String())
 		}
 	})
-	t.Run("classification keys imply classification scope", func(t *testing.T) {
-		tests := map[cbc.Key]string{
-			org.IdentityKeyHSN:    "HS",
-			org.IdentityKeyCPV:    "STI",
-			org.IdentityKeyUNSPSC: "TST",
-		}
-		for key, scheme := range tests {
-			id := &org.Identity{
-				Key:  key,
-				Code: "03222200",
-			}
-			norm.Normalize(id, tax.AddonContext(en16931.V2017))
-			assert.Equal(t, org.IdentityScopeClass, id.Scope, key.String())
-			assert.Equal(t, scheme, id.Ext.Get(untdid.ExtKeyItemType).String(), key.String())
-		}
-	})
-	t.Run("existing item type extension implies scope", func(t *testing.T) {
-		id := &org.Identity{
-			Code: "09348023",
-			Ext: tax.ExtensionsOf(cbc.CodeMap{
-				untdid.ExtKeyItemType: "TST",
-			}),
-		}
-		norm.Normalize(id, tax.AddonContext(en16931.V2017))
-		assert.Equal(t, org.IdentityScopeClass, id.Scope)
-	})
-	t.Run("does not override existing scope", func(t *testing.T) {
-		id := &org.Identity{
-			Scope: org.IdentityScopeTax,
-			Code:  "09348023",
-			Ext: tax.ExtensionsOf(cbc.CodeMap{
-				untdid.ExtKeyItemType: "TST",
-			}),
-		}
-		norm.Normalize(id, tax.AddonContext(en16931.V2017))
-		assert.Equal(t, org.IdentityScopeTax, id.Scope)
-	})
 	t.Run("gln key keeps scope empty", func(t *testing.T) {
 		id := &org.Identity{
 			Key:  org.IdentityKeyGLN,

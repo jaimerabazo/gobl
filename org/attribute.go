@@ -9,9 +9,9 @@ import (
 // Attribute describes a named feature or property of the parent object,
 // such as the colour or size of an item.
 type Attribute struct {
-	// Machine-readable key that identifies the attribute or property.
+	// Key that identifies the attribute or property.
 	Key cbc.Key `json:"key" jsonschema:"title=Key"`
-	// Human-readable label for internal use, not included in output documents.
+	// label for internal use, not included in output documents.
 	Label string `json:"label,omitempty" jsonschema:"title=Label"`
 	// Value of the attribute or property.
 	Value string `json:"value" jsonschema:"title=Value"`

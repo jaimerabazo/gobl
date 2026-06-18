@@ -61,15 +61,6 @@ var orgIdentityLegalSchemeMap = map[cbc.Key]cbc.Code{
 	org.IdentityKeyUPC:  "0160",
 }
 
-// Map of GOBL Identity keys for item classification schemes to the
-// corresponding UNTDID 7143 item type code. Identities with these keys are
-// given the `class` scope (BT-158).
-var orgIdentityItemTypeMap = map[cbc.Key]cbc.Code{
-	org.IdentityKeyHSN:    "HS",  // Harmonised system
-	org.IdentityKeyCPV:    "STI", // CPV (Common Procurement Vocabulary)
-	org.IdentityKeyUNSPSC: "TST", // UNSPSC
-}
-
 // Map of GOBL Identity types (codes) to the corresponding ISO/IEC 6523 code.
 // This is used for regime-specific identity types that use Type instead of Key.
 var orgIdentityTypeSchemeMap = map[cbc.Code]cbc.Code{
@@ -110,14 +101,6 @@ func normalizeOrgIdentity(i *org.Identity) {
 
 	// Check for key-based identity mapping first
 	if i.Key != cbc.KeyEmpty {
-		// Item classification schemes (BT-158)
-		if scheme, ok := orgIdentityItemTypeMap[i.Key]; ok {
-			i.Scope = org.IdentityScopeClass
-			i.Ext = i.Ext.Merge(tax.ExtensionsOf(cbc.CodeMap{
-				untdid.ExtKeyItemType: scheme,
-			}))
-			return
-		}
 		// Registered item identification schemes (BT-157)
 		if scheme, ok := orgIdentityLegalSchemeMap[i.Key]; ok {
 			i.Scope = org.IdentityScopeLegal
@@ -141,12 +124,6 @@ func normalizeOrgIdentity(i *org.Identity) {
 				iso.ExtKeySchemeID: scheme,
 			}))
 		}
-	}
-
-	// Identities already carrying the classification binding get the scope
-	// so that pre-existing documents converge on the canonical form.
-	if i.Scope == cbc.KeyEmpty && i.Ext.Has(untdid.ExtKeyItemType) {
-		i.Scope = org.IdentityScopeClass
 	}
 }
 

@@ -34,8 +34,6 @@ const (
 	IdentityKeyGTIN      cbc.Key = "gtin"      // GS1 Global Trade Item Number
 	IdentityKeyEAN       cbc.Key = "ean"       // European Article Number
 	IdentityKeyUPC       cbc.Key = "upc"       // UPC (Universal Product Code)
-	IdentityKeyCPV       cbc.Key = "cpv"       // EU Common Procurement Vocabulary
-	IdentityKeyUNSPSC    cbc.Key = "unspsc"    // United Nations Standard Products and Services Code
 	IdentityKeyIMEI      cbc.Key = "imei"      // International Mobile Equipment Identity
 	IdentityKeyDUNS      cbc.Key = "duns"      // Dun & Bradstreet D-U-N-S Number
 	IdentityKeyNCM       cbc.Key = "ncm"       // Mercosur Common Nomenclature
