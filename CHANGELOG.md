@@ -17,6 +17,29 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - `eu-en16931`: identity normalizations — `gtin`/`ean`/`upc` keys imply the `legal` scope with ISO 6523 scheme `0160`; `hsn`/`cpv`/`unspsc` keys imply the `class` scope with the matching UNTDID 7143 code; identities already carrying `untdid-item-type` gain the `class` scope.
 - `eu-en16931`: identity rules — `class` identities require the `untdid-item-type` extension (BT-158/BR-CL-13); items allow at most one `legal` identity (BT-157) and item `legal` identities require `iso-scheme-id` (BR-64). The scheme requirement is enforced at the item level since party identities also use the `legal` scope without one.
 
+## [v0.501.0] - 2026-06-16
+
+### Added
+
+- `cbc.Code`: `HasPrefix`, `HasSuffix`, `TrimPrefix`, and `TrimSuffix` helpers.
+- `org`: `Registration` object includes `ext` for addon-specific registration details.
+- `regimes/br`: Party address country is now inferred automatically from tax ID or identities.
+- `addons/br/nfe`: Allow foreign customers to provide an identity (e.g. a passport) alternatively to a tax ID.
+- `addons/br/nfe`: Supplier and customer addresses now require the `country` field, as mandated by the NF-e spec.
+
+### Changed
+
+- `addons/br/nfe`: Customer address `state` presence validation and the `br-ibge-municipality` extension are now applied to Brazilian parties only.
+- `it-sdi`: `it-sdi-liquidation-state` and `it-sdi-shareholder-state` registration extensions for the FatturaPA `IscrizioneREA` block (`StatoLiquidazione` and `SocioUnico`).
+
+### Fixed
+
+- `regimes/no`: Norwegian VAT identities now keep — and gain, when given as a bare organisation number — the `MVA` suffix, so serialized VAT numbers take the `NO<orgnr>MVA` form that the EHF and Peppol national rules (NO-R-001) require. Validation expects the suffixed form; organisation-number identities are unchanged.
+
+### Removed
+
+- `addons/eu-en16935-v2017`: Exemption reason rule (BR-E-10) validation has been removed as it is was incorrectly enforcing a VATEX code.
+
 ## [v0.500.0] - 2026-06-10
 
 GOBL is now a pure document library. The CLI, HTTP API, MCP server, and WASM build have moved to the [gobl.dev](https://github.com/invopop/gobl.dev) project, which composes this library with the complete set of addons. Install the CLI from its new home: `go install github.com/invopop/gobl.dev/cmd/gobl@latest`.
