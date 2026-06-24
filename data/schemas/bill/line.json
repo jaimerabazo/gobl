@@ -42,9 +42,9 @@
           "title": "Cost Reference",
           "description": "Buyer accounting reference cost code to associate with the line."
         },
-        "buyer_ref": {
+        "buyer_item_ref": {
           "$ref": "https://gobl.org/draft-0/cbc/code",
-          "title": "Buyer Reference",
+          "title": "Buyer Item Reference",
           "description": "Reference code assigned by the buyer to identify the item or service\nbeing supplied on this line."
         },
         "item": {
@@ -384,9 +384,9 @@
           "title": "Cost Reference",
           "description": "Buyer accounting reference cost code to associate with the line."
         },
-        "buyer_ref": {
+        "buyer_item_ref": {
           "$ref": "https://gobl.org/draft-0/cbc/code",
-          "title": "Buyer Reference",
+          "title": "Buyer Item Reference",
           "description": "Reference code assigned by the buyer to identify the item or service\nbeing supplied on this line."
         },
         "item": {

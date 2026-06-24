@@ -31,7 +31,7 @@ type Line struct {
 	Cost cbc.Code `json:"cost,omitempty" jsonschema:"title=Cost Reference"`
 	// Reference code assigned by the buyer to identify the item or service
 	// being supplied on this line.
-	BuyerRef cbc.Code `json:"buyer_ref,omitempty" jsonschema:"title=Buyer Reference"`
+	BuyerItemRef cbc.Code `json:"buyer_item_ref,omitempty" jsonschema:"title=Buyer Item Reference"`
 	// Details about the item, service or good, that is being sold
 	Item *org.Item `json:"item" jsonschema:"title=Item"`
 	// Breakdown of the line item for more detailed information. The sum of all lines
@@ -87,7 +87,7 @@ type SubLine struct {
 	Cost cbc.Code `json:"cost,omitempty" jsonschema:"title=Cost Reference"`
 	// Reference code assigned by the buyer to identify the item or service
 	// being supplied on this line.
-	BuyerRef cbc.Code `json:"buyer_ref,omitempty" jsonschema:"title=Buyer Reference"`
+	BuyerItemRef cbc.Code `json:"buyer_item_ref,omitempty" jsonschema:"title=Buyer Item Reference"`
 	// Details about the item, service or good, that is being sold
 	Item *org.Item `json:"item" jsonschema:"title=Item"`
 	// Result of quantity multiplied by the item's price (calculated)
@@ -191,7 +191,7 @@ func (sl *SubLine) IsEmpty() bool {
 			sl.Period == nil &&
 			sl.Order.IsEmpty() &&
 			sl.Cost.IsEmpty() &&
-			sl.BuyerRef.IsEmpty() &&
+			sl.BuyerItemRef.IsEmpty() &&
 			sl.Item == nil &&
 			sl.Sum == nil &&
 			len(sl.Discounts) == 0 &&
