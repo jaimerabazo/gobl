@@ -391,28 +391,19 @@ func TestOrgInboxValidate(t *testing.T) {
 	})
 }
 
-func TestOrgIdentityScopeNormalize(t *testing.T) {
-	t.Run("gtin key implies legal scope", func(t *testing.T) {
+func TestOrgIdentitySchemeNormalize(t *testing.T) {
+	// Key-based normalization only sets the ISO 6523 scheme extension; it does
+	// not derive an identity scope. Scope must be set explicitly by the caller.
+	t.Run("gtin key sets scheme without a scope", func(t *testing.T) {
 		id := &org.Identity{
 			Key:  org.IdentityKeyGTIN,
 			Code: "9501101530003",
 		}
 		norm.Normalize(id, tax.AddonContext(en16931.V2017))
-		assert.Equal(t, org.IdentityScopeLegal, id.Scope)
+		assert.Empty(t, id.Scope)
 		assert.Equal(t, "0160", id.Ext.Get(iso.ExtKeySchemeID).String())
 	})
-	t.Run("ean and upc keys are gtin aliases", func(t *testing.T) {
-		for _, key := range []cbc.Key{org.IdentityKeyEAN, org.IdentityKeyUPC} {
-			id := &org.Identity{
-				Key:  key,
-				Code: "5012345678900",
-			}
-			norm.Normalize(id, tax.AddonContext(en16931.V2017))
-			assert.Equal(t, org.IdentityScopeLegal, id.Scope)
-			assert.Equal(t, "0160", id.Ext.Get(iso.ExtKeySchemeID).String())
-		}
-	})
-	t.Run("gln key keeps scope empty", func(t *testing.T) {
+	t.Run("gln key sets scheme without a scope", func(t *testing.T) {
 		id := &org.Identity{
 			Key:  org.IdentityKeyGLN,
 			Code: "1234567890123",
@@ -420,6 +411,17 @@ func TestOrgIdentityScopeNormalize(t *testing.T) {
 		norm.Normalize(id, tax.AddonContext(en16931.V2017))
 		assert.Empty(t, id.Scope)
 		assert.Equal(t, "0088", id.Ext.Get(iso.ExtKeySchemeID).String())
+	})
+	t.Run("ean and upc keys are not normalized", func(t *testing.T) {
+		for _, key := range []cbc.Key{org.IdentityKeyEAN, org.IdentityKeyUPC} {
+			id := &org.Identity{
+				Key:  key,
+				Code: "5012345678900",
+			}
+			norm.Normalize(id, tax.AddonContext(en16931.V2017))
+			assert.Empty(t, id.Scope)
+			assert.False(t, id.Ext.Has(iso.ExtKeySchemeID))
+		}
 	})
 }
 

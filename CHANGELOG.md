@@ -13,7 +13,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - `org`: new identity scope `class`, and the `legal` scope extended to items. A `legal` item identity is issued under a registered identification scheme (e.g. GS1 GTIN, EN 16931 BT-157); a `class` identity groups the item into a category scheme such as UNSPSC, CPV, or HS (BT-158). The scope declares what the identity is; addons bind and enforce the extensions each scope requires.
 - `bill`: `Line.BuyerRef` and `SubLine.BuyerRef` — the reference code assigned by the buyer to identify the item or service supplied on the line (EN 16931 BT-156). The buyer's code is customer–item relationship data, so it lives on the line rather than on the item.
 - `data/catalogues/untdid`: new `untdid-item-type-version` extension to carry the version of the scheme referenced by `untdid-item-type` (BT-158-2).
-- `eu-en16931`: identity normalizations — `gtin`/`ean`/`upc` keys imply the `legal` scope with ISO 6523 scheme `0160`.
 - `eu-en16931`: identity rules — `class` identities require the `untdid-item-type` extension (BT-158/BR-CL-13); items allow at most one `legal` identity (BT-157) and item `legal` identities require `iso-scheme-id` (BR-64). The scheme requirement is enforced at the item level since party identities also use the `legal` scope without one.
 
 ## [v0.501.0] - 2026-06-16

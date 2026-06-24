@@ -48,17 +48,8 @@ var orgNoteTextSubjectMap = map[cbc.Key]cbc.Code{
 
 // Map of GOBL Identity keys to the corresponding ISO/IEC 6523 code.
 var orgIdentitySchemeMap = map[cbc.Key]cbc.Code{
-	org.IdentityKeyGLN: "0088",
-}
-
-// Map of GOBL Identity keys for registered item identification schemes to
-// the corresponding ISO/IEC 6523 code. Identities with these keys are
-// given the `legal` scope (BT-157). EAN and UPC codes are GTINs under
-// the GS1 system, so they share the GTIN scheme code.
-var orgIdentityLegalSchemeMap = map[cbc.Key]cbc.Code{
+	org.IdentityKeyGLN:  "0088",
 	org.IdentityKeyGTIN: "0160",
-	org.IdentityKeyEAN:  "0160",
-	org.IdentityKeyUPC:  "0160",
 }
 
 // Map of GOBL Identity types (codes) to the corresponding ISO/IEC 6523 code.
@@ -101,14 +92,6 @@ func normalizeOrgIdentity(i *org.Identity) {
 
 	// Check for key-based identity mapping first
 	if i.Key != cbc.KeyEmpty {
-		// Registered item identification schemes (BT-157)
-		if scheme, ok := orgIdentityLegalSchemeMap[i.Key]; ok {
-			i.Scope = org.IdentityScopeLegal
-			i.Ext = i.Ext.Merge(tax.ExtensionsOf(cbc.CodeMap{
-				iso.ExtKeySchemeID: scheme,
-			}))
-			return
-		}
 		if scheme, ok := orgIdentitySchemeMap[i.Key]; ok {
 			i.Ext = i.Ext.Merge(tax.ExtensionsOf(cbc.CodeMap{
 				iso.ExtKeySchemeID: scheme,
