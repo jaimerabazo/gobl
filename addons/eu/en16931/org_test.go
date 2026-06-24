@@ -494,6 +494,21 @@ func TestOrgItemLegalIdentities(t *testing.T) {
 		err := rules.Validate(item, tax.AddonContext(en16931.V2017))
 		assert.ErrorContains(t, err, "legal identities require the 'iso-scheme-id' extension")
 	})
+	t.Run("ignores nil identity entries", func(t *testing.T) {
+		item := &org.Item{
+			Name: "Test",
+			Unit: org.UnitOne,
+			Identities: []*org.Identity{
+				nil,
+				{
+					Scope: org.IdentityScopeLegal,
+					Code:  "9501101530003",
+					Ext:   tax.ExtensionsOf(cbc.CodeMap{iso.ExtKeySchemeID: "0160"}),
+				},
+			},
+		}
+		assert.NoError(t, rules.Validate(item, tax.AddonContext(en16931.V2017)))
+	})
 	t.Run("one legal identity with classifications", func(t *testing.T) {
 		item := &org.Item{
 			Name: "Test",

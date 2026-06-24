@@ -1,8 +1,10 @@
 package bill
 
 import (
+	"encoding/json"
 	"testing"
 
+	"github.com/invopop/gobl/cbc"
 	"github.com/invopop/gobl/currency"
 	"github.com/invopop/gobl/norm"
 	"github.com/invopop/gobl/num"
@@ -32,6 +34,43 @@ func exampleRates(t *testing.T) []*currency.ExchangeRate {
 			Amount: num.MakeAmount(100629, 2),
 		},
 	}
+}
+
+func TestSubLineBuyerRef(t *testing.T) {
+	t.Run("buyer ref keeps a sub-line non-empty", func(t *testing.T) {
+		sl := &SubLine{BuyerRef: "BUYER-123"}
+		assert.False(t, sl.IsEmpty())
+	})
+	t.Run("clean keeps sub-lines carrying only a buyer ref", func(t *testing.T) {
+		sls := CleanSubLines([]*SubLine{
+			nil,
+			{},
+			{BuyerRef: "BUYER-123"},
+		})
+		require.Len(t, sls, 1)
+		assert.Equal(t, cbc.Code("BUYER-123"), sls[0].BuyerRef)
+	})
+}
+
+func TestLineBuyerRef(t *testing.T) {
+	t.Run("survives calculation", func(t *testing.T) {
+		line := &Line{
+			Quantity: num.MakeAmount(1, 0),
+			BuyerRef: "BUYER-REF-1",
+			Item: &org.Item{
+				Name:  "Test Item",
+				Price: num.NewAmount(1000, 2),
+			},
+		}
+		require.NoError(t, calculateLine(line, currency.EUR, nil, tax.RoundingRuleCurrency))
+		assert.Equal(t, cbc.Code("BUYER-REF-1"), line.BuyerRef)
+	})
+	t.Run("serializes to buyer_ref", func(t *testing.T) {
+		line := &Line{BuyerRef: "BUYER-REF-1"}
+		data, err := json.Marshal(line)
+		require.NoError(t, err)
+		assert.Contains(t, string(data), `"buyer_ref":"BUYER-REF-1"`)
+	})
 }
 
 func TestLineValidation(t *testing.T) {

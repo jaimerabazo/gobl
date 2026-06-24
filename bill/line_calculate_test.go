@@ -684,4 +684,42 @@ func TestLineCalculateBaseQuantity(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, "2.46", sl.Sum.String())
 	})
+	t.Run("precise rounding keeps division precision", func(t *testing.T) {
+		line := &Line{
+			Quantity: num.MakeAmount(1, 0),
+			Item: &org.Item{
+				Name:         "Bulk item",
+				Price:        num.NewAmount(10000, 2), // 100.00 per 3 units
+				BaseQuantity: num.NewAmount(3, 0),
+			},
+		}
+		err := calculateLine(line, currency.EUR, nil, tax.RoundingRulePrecise)
+		require.NoError(t, err)
+		assert.Equal(t, "33.33333", line.Sum.String())
+	})
+	t.Run("base quantity larger than quantity", func(t *testing.T) {
+		line := &Line{
+			Quantity: num.MakeAmount(50, 0),
+			Item: &org.Item{
+				Name:         "Per-thousand price",
+				Price:        num.NewAmount(2500, 2), // 25.00 per 1000 units
+				BaseQuantity: num.NewAmount(1000, 0),
+			},
+		}
+		err := calculateLine(line, currency.EUR, nil, tax.RoundingRuleCurrency)
+		require.NoError(t, err)
+		assert.Equal(t, "1.25", line.Sum.String())
+	})
+	t.Run("nil base quantity behaves as one", func(t *testing.T) {
+		line := &Line{
+			Quantity: num.MakeAmount(3, 0),
+			Item: &org.Item{
+				Name:  "Plain item",
+				Price: num.NewAmount(1000, 2),
+			},
+		}
+		err := calculateLine(line, currency.EUR, nil, tax.RoundingRuleCurrency)
+		require.NoError(t, err)
+		assert.Equal(t, "30.00", line.Sum.String())
+	})
 }
